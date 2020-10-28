@@ -15,8 +15,6 @@ public class ThreadExample {
         });
 
         thread.start();
-
-
         System.out.println("I am over");
 
     }
