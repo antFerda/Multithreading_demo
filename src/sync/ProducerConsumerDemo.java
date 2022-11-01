@@ -83,10 +83,6 @@ class Process {
 
                     lock.notify();
                 }
-
-//                if (integers.size() == min) lock.notify();
-
-//                System.out.println("Consumer process have ended");
             }
         }
     }
