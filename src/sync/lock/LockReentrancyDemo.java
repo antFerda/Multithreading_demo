@@ -2,12 +2,10 @@ package sync.lock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class LockReentrancyDemo {
 
-    private static List<Thread> threadList = new ArrayList<>();
+    private static final List<Thread> threadList = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -39,70 +37,3 @@ public class LockReentrancyDemo {
     }
 }
 
-class Calculator {
-
-    private Lock lock = new ReentrantLock();
-
-    private double value = 0;
-
-    public double getValue() {
-        return value;
-    }
-
-    public void add(double amount) {
-
-        System.out.println("adding " + amount);
-
-        lock.lock();
-
-        try {
-            value += amount;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void subtract(double amount) {
-
-        System.out.println("subtracting " + amount);
-
-        lock.lock();
-
-        try {
-            value -= amount;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void doMultipleCalculations(List<Calculation> calculationList) {
-
-        lock.lock();
-
-        try {
-            for (Calculation c: calculationList) {
-                switch (c.type) {
-                    case ADD -> add(c.amount);
-                    case SUBTRACT -> subtract(c.amount);
-                }
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-
-    public static class Calculation {
-        private CalculationType type;
-        private double amount;
-
-        public Calculation(CalculationType type, double amount) {
-            this.type = type;
-            this.amount = amount;
-        }
-
-        enum CalculationType {
-            ADD, SUBTRACT
-        }
-    }
-}
