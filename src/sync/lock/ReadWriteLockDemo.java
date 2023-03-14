@@ -2,7 +2,6 @@ package sync.lock;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -38,7 +37,7 @@ public class ReadWriteLockDemo {
 
     private static void launchUpdateThread(Storage storage) {
         var updateThread = new Thread(() -> {
-            storage.setFinalString("NEW_DATA");
+            storage.appendString("/NEW_DATA");
 
             var result = storage.getFinalString();
 
@@ -59,9 +58,7 @@ class Storage {
 
     ReadWriteLock lock = new ReentrantReadWriteLock();
 
-
-    private StringBuffer buffer = new StringBuffer();
-
+    private final StringBuffer buffer = new StringBuffer("EMPTY_STATE");
 
     public String getFinalString() {
         lock.readLock().lock();
@@ -72,10 +69,10 @@ class Storage {
         }
     }
 
-    public void setFinalString(String finalString) {
+    public void appendString(String stringToAppend) {
         lock.writeLock().lock();
         try {
-            buffer.append(finalString);
+            buffer.append(stringToAppend);
         } finally {
             lock.writeLock().unlock();
         }
